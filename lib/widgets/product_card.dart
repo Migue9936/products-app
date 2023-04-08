@@ -123,7 +123,7 @@ class _BackgroundImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         height: 400,
         child: picture == null
@@ -143,7 +143,7 @@ class _ProductDescription extends StatelessWidget {
   final String name;
   final String? id;
 
-  const _ProductDescription({super.key, required this.name, this.id});
+  const _ProductDescription({required this.name, this.id});
 
   
 

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import 'package:products_app/providers/providers.dart';
 import 'package:products_app/ui/input_decorations.dart';
 import 'package:products_app/widgets/widgets.dart';
+
 
 class ProductScreen extends StatelessWidget {
    
@@ -8,13 +13,36 @@ class ProductScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+
+    final productProvider = Provider.of<ProductsProvider>(context);
+
+    return  ChangeNotifierProvider(
+      create: (context) => ProductFormProvider(productProvider.selectedProduct),
+      child: _ProductScreenBody(productProvider: productProvider),
+    );
+    
+  }
+}
+
+class _ProductScreenBody extends StatelessWidget {
+  const _ProductScreenBody({
+    required this.productProvider,
+  });
+
+  final ProductsProvider productProvider;
+
+  @override
+  Widget build(BuildContext context) {
+
+    final productForm = Provider.of<ProductFormProvider>(context);
+
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
               children:  [
-                const ProductImage(),
+                 ProductImage(url: productProvider.selectedProduct.picture),
                 Positioned(
                   top: 60,
                   left:4,
@@ -40,24 +68,28 @@ class ProductScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
 
         child: const Icon(Icons.save_outlined),
-        onPressed: () {
-          
+        onPressed: () async {
+            if (!productForm.isValidForm()) return;
+            await productProvider.saveOrCreateProduct(productForm.product);
         },
       ),
     );
-    
   }
 }
 
 class _ProductForm extends StatelessWidget {
   
-
   @override
   Widget build(BuildContext context) {
+ 
+  final productForm = Provider.of<ProductFormProvider>(context);
+  final product = productForm.product; 
+ 
+ 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -65,10 +97,20 @@ class _ProductForm extends StatelessWidget {
         width: double.infinity,
         decoration: _buildBoxDecoration(),
         child: Form(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          key: productForm.formKey,
           child: Column(
             children: [
               const SizedBox(height: 10),
               TextFormField(
+                initialValue: product.name,
+                onChanged: (value) => product.name = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Name Required';
+                  }
+                  return null;
+                },
                 decoration: InputDecorations.authInputDecoration(
                   hintText: 'Product Name', 
                   labelText: 'Name'
@@ -80,6 +122,18 @@ class _ProductForm extends StatelessWidget {
               
               TextFormField(
                 keyboardType: TextInputType.number,
+                initialValue: '${product.price}',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}'))
+                ],
+                onChanged: (value) {
+                  if (double.tryParse(value)==null) {
+                    product.price = 0;
+                  }else{
+                    product.price = double.parse(value);
+                  }
+
+                },
                 decoration: InputDecorations.authInputDecoration(
                   hintText: '\$150', 
                   labelText: 'Price'
@@ -88,11 +142,10 @@ class _ProductForm extends StatelessWidget {
               const SizedBox(height: 30),
 
               SwitchListTile.adaptive(
-                value: true,
+                value: product.available,
                 title: const Text('Available'), 
                 activeColor: Colors.indigoAccent,
-                onChanged: (value) {
-                },
+                onChanged:  productForm.updateAvailability,
               ),
 
               const SizedBox(height: 30)
