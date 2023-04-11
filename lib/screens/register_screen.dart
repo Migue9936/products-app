@@ -5,9 +5,9 @@ import 'package:products_app/ui/input_decorations.dart';
 import 'package:products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class RegisterScreen extends StatelessWidget {
    
-  const LoginScreen({Key? key}) : super(key: key);
+  const RegisterScreen({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
-                    Text('Login',style: Theme.of(context).textTheme.titleLarge),
+                    Text('Register',style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 30),
 
                     ChangeNotifierProvider(
@@ -33,15 +33,15 @@ class LoginScreen extends StatelessWidget {
               ),
               
               const SizedBox(height: 50),
-              TextButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, 'register'),
+               TextButton(
+                onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
                 style:  ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
                   shape: MaterialStateProperty.all(const StadiumBorder()),
                   ),
                 child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10,vertical: 3),
-                child: Text('Create a new account',style: TextStyle(fontSize: 18,color: Colors.black87))),
+                child: Text('Do you have an account?',style: TextStyle(fontSize: 18,color: Colors.black87))),
                 ),
               const SizedBox(height: 280),
 
@@ -101,14 +101,14 @@ class _LoginForm extends StatelessWidget {
             disabledColor: Colors.grey,
             onPressed: loginForm.isLoading ? null : () async{
               
-               FocusScope.of(context).unfocus();
+              FocusScope.of(context).unfocus();
               final authProvider = Provider.of<AuthProvider>(context,listen: false);
               
               if(!loginForm.isValidForm())  return; 
               
               loginForm.isLoading = true;
               
-              final String? errorMessage = await authProvider.login(loginForm.email, loginForm.password);
+              final String? errorMessage = await authProvider.createUser(loginForm.email, loginForm.password);
 
               if (errorMessage == null) {
                 // ignore: use_build_context_synchronously
@@ -121,8 +121,7 @@ class _LoginForm extends StatelessWidget {
             },
             child: loginForm.isLoading ? const SizedBox(width: 38,height: 17, child: CircularProgressIndicator(color: Colors.deepPurple,)) : 
             const Text(
-              'Login',
-              
+              'Create',
               style: TextStyle(color: Colors.white)
               ),
             )
