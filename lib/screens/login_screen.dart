@@ -114,10 +114,10 @@ class _LoginForm extends StatelessWidget {
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacementNamed(context, 'home');
               }else{
-                //TODO Mostrar error en pantalla
-                print(errorMessage);
-                loginForm.isLoading = false;
+                  showError(errorMessage); 
+                  loginForm.isLoading = false;
               }
+
             },
             child: loginForm.isLoading ? const SizedBox(width: 38,height: 17, child: CircularProgressIndicator(color: Colors.deepPurple,)) : 
             const Text(
@@ -130,5 +130,19 @@ class _LoginForm extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void showError(String errorMessage) {
+    print(errorMessage);
+    if (errorMessage.contains("EMAIL_NOT_FOUND")) {
+      // Mostrar mensaje de correo electrónico incorrecto
+      NotificationsProvider.showSnackbar("The e-mail address is not registered.");
+    } else if (errorMessage.contains("INVALID_PASSWORD")) {
+      // Mostrar mensaje de contraseña incorrecta
+      NotificationsProvider.showSnackbar("Password Incorrect");
+      // Mostrar mensaje de contraseña erronea es insertada varas veces
+    } else if (errorMessage.contains("TOO_MANY_ATTEMPTS_TRY_LATER")){
+      NotificationsProvider.showSnackbar('Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later');
+    }
   }
 }
