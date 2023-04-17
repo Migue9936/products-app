@@ -17,7 +17,6 @@ class CheckAuthScreen extends StatelessWidget {
          child: FutureBuilder(
           future: authProvider.readToken(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) { 
-            print(snapshot.data);
             if (!snapshot.hasData) {
               return const Text('Espere...');
             }

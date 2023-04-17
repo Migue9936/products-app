@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/providers/login_form_provider.dart';
 import 'package:products_app/providers/providers.dart';
 import 'package:products_app/ui/input_decorations.dart';
 import 'package:products_app/widgets/widgets.dart';
@@ -133,7 +132,6 @@ class _LoginForm extends StatelessWidget {
   }
 
   void showError(String errorMessage) {
-    print(errorMessage);
     if (errorMessage.contains("EMAIL_NOT_FOUND")) {
       // Mostrar mensaje de correo electrónico incorrecto
       NotificationsProvider.showSnackbar("The e-mail address is not registered.");

@@ -61,7 +61,6 @@ class _ProductScreenBody extends StatelessWidget {
                       final picker = ImagePicker();
                       final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery,imageQuality: 100);
                       if (pickedFile == null) {
-                        print('Nothing selected');
                       }
 
                       productProvider.updateSelectedProductImage(pickedFile!.path);

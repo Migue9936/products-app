@@ -64,6 +64,7 @@ class ProductsProvider extends ChangeNotifier{
   Future updateProduct(Product product) async {
     final url = Uri.https(_baseUrl, 'Products/${product.id}.json');
     final resp = await http.put(url, body: product.toJson());
+    // ignore: unused_local_variable
     final decodeData = resp.body;
 
     // Se busca el producto que cpincida con el producto que esté en la lista product[]
@@ -120,7 +121,6 @@ class ProductsProvider extends ChangeNotifier{
 
     // Se comprueba si la respuesta HTTP tiene un código de estado que indica que la carga de la imagen ha fallado
     if (resp.statusCode != 200 && resp.statusCode!=201) {
-      print('error, the response is :${resp.body} ');
       return null;
     }
 
